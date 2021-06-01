@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        {{-- Llamada a componentes vue --}}
+        <script src="{{ asset('js/app.js') }}" async></script>
         <title>Laravel</title>
 
         <!-- Fonts -->
@@ -79,11 +80,11 @@
                 </div>
             @endif
 
-            <div class="content">
+            <div class="content" id="app">
                 <div class="title m-b-md">
-                    Laravel
+                    Laravela
                 </div>
-
+                <example-component></example-component>
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
