@@ -6,13 +6,21 @@ window.onscroll = function() {
 };
 
 function scrollFunction() {
+    
     if (
         document.body.scrollTop > 700 ||
         document.documentElement.scrollTop > 700
     ) {
-        mybutton.style.display = "block";
+        
+        mybutton.classList.add('visible');
+        mybutton.classList.remove('oculto');
+        console.log(mybutton.classList);
     } else {
-        mybutton.style.display = "none";
+        
+        mybutton.classList.remove('visible');
+        mybutton.classList.add('oculto');
+        // mybutton.style.display = "hidden";
+        // console.log(mybutton.style.display);
     }
 }
 

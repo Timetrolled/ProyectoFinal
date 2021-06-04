@@ -15,8 +15,8 @@
                             <span id="time" class="ms-2"><i class="far fa-clock"></i>{{this.movie.runtime}}min</span>
                             <p id="review">{{this.movie.overview}}</p>
 
-                        <div v-if="this.providersLoaded">
-                            <div class="providers" v-if="this.watchProviders.flatrate != null">
+                        <div v-if="watchProviders">
+                            <div class="providers" v-if="watchProviders.flatrate">
                                 <span class="rentStreamBuy me-2">Streaming</span>
                                     <span class="ms-2" v-for="provider in (this.watchProviders.flatrate)">
 
@@ -24,7 +24,7 @@
                                         {{provider.provider_name}}
                                     </span>
                             </div>
-                            <div class="providers" v-if="this.watchProviders.rent != null">
+                            <div class="providers" v-if="watchProviders.rent">
                                 <span class="rentStreamBuy me-2">Alquiler</span>
                                     <span class="ms-2" v-for="provider in (this.watchProviders.rent)">
 
@@ -36,7 +36,7 @@
 
                         </div>
 
-                        <div v-if="this.videoLoaded" class="mt-4 d-flex align-items-center justify-content-center">
+                        <div v-if="videoResults" class="mt-4 d-flex align-items-center justify-content-center">
                             <iframe width="650" height="415" :src="'https://www.youtube.com/embed/'+this.videoResults[0].key" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>
@@ -60,8 +60,8 @@ export default {
     },
     mounted() {
         this.movieBasicJson();
-        this.movieVideoJson();
         this.movieWatchProviders();
+        this.movieVideoJson();
     },
     methods: {
         movieBasicJson() {
@@ -73,19 +73,17 @@ export default {
                     this.movie = response.data;
                 });
         },
-        async movieVideoJson(){
-            const test = await axios.get("https://api.themoviedb.org/3/movie/"+this.id+"/videos?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=es-ES")
+        movieVideoJson(){
+            axios.get("https://api.themoviedb.org/3/movie/"+this.id+"/videos?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=en-US")
             .then(response =>{
                 this.videoResults = response.data.results;
-
                 this.videoLoaded = true;
                 
             });
             
-            // axios.get("https://api.themoviedb.org/3/movie/"+this.id+"/videos?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=en-US")
-            // .then(response =>{
-            //     this.videoResults = response.data.results;
-            // });
+                
+            
+            
             
         },
         async movieWatchProviders(){
