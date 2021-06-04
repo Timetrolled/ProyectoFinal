@@ -23,6 +23,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('card-component', require('./components/CardComponent.vue').default);
 Vue.component('movies-component', require('./components/MoviesComponent.vue').default);
 Vue.component('button-component', require('./components/buttonComponent.vue').default);
+Vue.component('moviedetail-component', require('./components/MovieDetailComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

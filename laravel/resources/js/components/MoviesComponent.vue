@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="botonera d-flex flex-row">
+        <div id="botonera d-flex">
             <button
                 class="p2 btnText btn btn-outline-dark mr-md-3 mb-2 mb-md-0"
                 @click="getPopular()"
@@ -16,7 +16,7 @@
 
 
             
-            <input type="text" id="searchButton" class="btnText btn btn-outline-dark mr-md-3 mb-2 mb-md-0" placeholder="Buscar" v-model="query" @keyup="getResults()">
+            <input type="text" id="searchButton" class="ml-auto btnText btn btn-outline-dark mr-md-3 mb-2 mb-md-0" placeholder="Buscar" v-model="query" @keyup="getResults()">
             
 
 
@@ -24,16 +24,19 @@
         </div>
         
         <div class="row gx-4 gx-lg-5 justify-content-center">
+            
             <div
                 class="card movie_card"
                 v-for="result in results"
                 :key="result.id"
             >
+            <a :href="'/details/' + result.id">
                 <img
                     :src="'http://image.tmdb.org/t/p/w500' + result.poster_path"
                     class="card-img-top"
                     alt="..."
                 />
+                </a>
                 <div class="card-body">
                     <h6 class="card-title">{{ result.title }}</h6>
                     <span class="movie_info ml-3">{{
@@ -58,7 +61,7 @@ export default {
     data: function() {
         return {
             results: '',
-            query:''
+            query:'',
         };
     },
     created() {

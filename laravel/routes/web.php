@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
+
+
+Route::get('/details/{id}', function ($id) {
+    return view('details')->with(compact('id'));
+});
