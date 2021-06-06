@@ -1,7 +1,7 @@
 <template>
 <div class="container-fluid">
+    <pulse-loader :loading="loading" :color="color" :size="size"></pulse-loader>
     <div id="detail" class="container" v-if="movie">
-        
         <div class="row justify-content-center">
                     <div class="card-body row d-flex flex-row">
                         <div class="col-sm-6 col-lg-4">
@@ -34,18 +34,27 @@
                             </div>
                         </div>
 
+                        <div id="addToList" class="btn btn-lg mt-4">
+                            <span>Añadir a la lista</span><i class="fas fa-heart ms-2"></i>
+                        </div>
+
                         </div>
 
                         <div v-if="videoResults" class="mt-4 d-flex align-items-center justify-content-center">
                             <iframe width="650" height="415" :src="'https://www.youtube.com/embed/'+this.videoResults[0].key" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
+                        
+                         
+                        
                     </div>
         </div>
     </div>
+    
 </div>
 </template>
 
 <script>
+
 export default {
     props: ["id"],
     data: function() {
@@ -78,7 +87,11 @@ export default {
             .then(response =>{
                 this.videoResults = response.data.results;
                 this.videoLoaded = true;
-                
+                if (response.data) {
+                    
+                }else{
+                    this.loading = false;
+                }
             });
             
                 
@@ -117,6 +130,17 @@ export default {
     border: 1px solid rgba(255, 255, 255, 0.041);
     color: white;
     font-size: 13px;
+}
+
+#addToList{
+    background-color: #e4d804;
+    color: rgb(0, 0, 0);
+    font-size: 13px;
+    border-radius: 5px;
+}
+
+.fa-heart{
+    color: #fb3640;
 }
 
 #title{

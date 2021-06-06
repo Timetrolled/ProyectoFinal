@@ -21,3 +21,19 @@ Route::get('/', function () {
 Route::get('/details/{id}', function ($id) {
     return view('details')->with(compact('id'));
 });
+
+Route::get('/register','RegistrationController@create');
+Route::post('register','RegistrationController@store');
+
+
+Route::get('/login', 'SessionsController@create');
+Route::post('/login', 'SessionsController@store');
+Route::get('/logout', 'SessionsController@destroy');
+
+
+
+Route::get('is-auth', function () {
+    $auth = Auth::user();
+    return $auth;
+    dd($auth);
+});

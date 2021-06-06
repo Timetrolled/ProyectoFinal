@@ -104,11 +104,9 @@ function scrollFunction() {
   if (document.body.scrollTop > 700 || document.documentElement.scrollTop > 700) {
     mybutton.classList.add('visible');
     mybutton.classList.remove('oculto');
-    console.log(mybutton.classList);
   } else {
     mybutton.classList.remove('visible');
-    mybutton.classList.add('oculto'); // mybutton.style.display = "hidden";
-    // console.log(mybutton.style.display);
+    mybutton.classList.add('oculto');
   }
 } // When the user clicks on the button, scroll to the top of the document
 

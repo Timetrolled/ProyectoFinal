@@ -2065,6 +2065,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["id"],
   data: function data() {
@@ -2096,6 +2104,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       axios.get("https://api.themoviedb.org/3/movie/" + this.id + "/videos?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=en-US").then(function (response) {
         _this2.videoResults = response.data.results;
         _this2.videoLoaded = true;
+
+        if (response.data) {} else {
+          _this2.loading = false;
+        }
       });
     },
     movieWatchProviders: function movieWatchProviders() {
@@ -2221,6 +2233,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2231,8 +2244,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       actualState: 'initialList',
       results: [],
       query: '',
-      page: 1
+      page: 1,
+      logged: false
     };
+  },
+  mounted: function mounted() {
+    this.checkLogin();
   },
   filters: {
     dateFormat: function dateFormat($value) {
@@ -2243,113 +2260,127 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
   },
   methods: {
+    checkLogin: function checkLogin() {
+      var _this = this;
+
+      console.log("AAAAAAAAAAAAAAAAAAAAA");
+      axios.get('is-auth').then(function (response) {
+        if (response.data) {
+          // console.log(response.data);
+          _this.logged = true;
+        } else {
+          // console.log("not logged in");
+          _this.logged = false;
+        }
+      });
+    },
     changeActualState: function changeActualState($actual) {
       this.actualState = $actual;
     },
     initialList: function initialList($state) {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("https://api.themoviedb.org/3/movie/popular?api_key=9ec647bcf53f9315ac4f7e4e2322c906&page=" + this.page).then(function (response) {
         if (response.data.results.length) {
-          var _this$results;
+          var _this2$results;
 
-          _this.page += 1;
+          _this2.page += 1;
 
-          (_this$results = _this.results).push.apply(_this$results, _toConsumableArray(response.data.results));
+          (_this2$results = _this2.results).push.apply(_this2$results, _toConsumableArray(response.data.results));
 
           $state.loaded();
-          console.log(_this.page);
+          console.log(_this2.page);
         } else {
           $state.complete();
         }
       });
     },
     initialGetPopular: function initialGetPopular() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.firstText = '';
       this.query = '';
       this.actualState = 'popular';
       axios.get("https://api.themoviedb.org/3/movie/popular?api_key=9ec647bcf53f9315ac4f7e4e2322c906&page=1").then(function (response) {
-        _this2.results = response.data.results;
+        _this3.results = response.data.results;
       });
     },
     getPopular: function getPopular($state) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.firstText = '';
       this.query = '';
       this.actualState = 'popular';
       axios.get("https://api.themoviedb.org/3/movie/popular?api_key=9ec647bcf53f9315ac4f7e4e2322c906&page=" + this.page).then(function (response) {
         if (response.data.results.length) {
-          var _this3$results;
+          var _this4$results;
 
-          _this3.page += 1;
+          _this4.page += 1;
 
-          (_this3$results = _this3.results).push.apply(_this3$results, _toConsumableArray(response.data.results));
+          (_this4$results = _this4.results).push.apply(_this4$results, _toConsumableArray(response.data.results));
 
           $state.loaded();
-          console.log(_this3.page);
+          console.log(_this4.page);
         } else {
           $state.complete();
         }
       });
     },
     initialGetTrending: function initialGetTrending() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.firstText = '';
       this.query = '';
       this.actualState = 'trending';
       axios.get("https://api.themoviedb.org/3/trending/movie/day?api_key=9ec647bcf53f9315ac4f7e4e2322c906").then(function (response) {
-        _this4.results = response.data.results;
+        _this5.results = response.data.results;
       });
     },
     getTrending: function getTrending($state) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.firstText = '';
       this.query = '';
       this.actualState = 'trending';
       axios.get("https://api.themoviedb.org/3/trending/movie/day?api_key=9ec647bcf53f9315ac4f7e4e2322c906&page=" + this.page).then(function (response) {
         if (response.data.results.length) {
-          var _this5$results;
+          var _this6$results;
 
-          _this5.page += 1;
+          _this6.page += 1;
 
-          (_this5$results = _this5.results).push.apply(_this5$results, _toConsumableArray(response.data.results));
+          (_this6$results = _this6.results).push.apply(_this6$results, _toConsumableArray(response.data.results));
 
           $state.loaded();
-          console.log(_this5.page);
+          console.log(_this6.page);
         } else {
           $state.complete();
         }
       });
     },
     initialGetResults: function initialGetResults() {
-      var _this6 = this;
+      var _this7 = this;
 
       this.firstText = '';
       this.actualState = 'searchQuery';
       axios.get("https://api.themoviedb.org/3/search/movie?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=es-ES&query=" + this.query + "&include_adult=false").then(function (response) {
-        _this6.results = response.data.results;
+        _this7.results = response.data.results;
       });
     },
     getResults: function getResults($state) {
-      var _this7 = this;
+      var _this8 = this;
 
       this.firstText = '';
       this.actualState = 'searchQuery';
       axios.get("https://api.themoviedb.org/3/search/movie?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=es-ES&query=" + this.query + "&include_adult=false&page=" + this.page).then(function (response) {
         if (response.data.results.length) {
-          var _this7$results;
+          var _this8$results;
 
-          _this7.page += 1;
+          _this8.page += 1;
 
-          (_this7$results = _this7.results).push.apply(_this7$results, _toConsumableArray(response.data.results));
+          (_this8$results = _this8.results).push.apply(_this8$results, _toConsumableArray(response.data.results));
 
           $state.loaded();
-          console.log(_this7.page);
+          console.log(_this8.page);
         } else {
           $state.complete();
         }
@@ -6841,7 +6872,26 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.rentStreamBuy{\r\n    color:#e4d804;\n}\n#backdrop {\r\n    width: 100%;\n}\n#detail {\r\n    padding-top: 10rem;\n}\n.providers{\r\n    padding:25px 10px;\r\n    background-color: #1d1b292f;\r\n    border: 1px solid rgba(255, 255, 255, 0.041);\r\n    color: white;\r\n    font-size: 13px;\n}\n#title{\r\n    color: white;\r\n    font-weight: 900;\n}\n#genre{\r\n    color: #E50914;\r\n    font-weight: 300;\r\n    font-size: 13px;\n}\n.fa-calendar-alt{\r\n    color:#e4d804;\r\n    font-size: 12px;\n}\n.fa-clock{\r\n    color:#e4d804;\r\n    font-size: 12px;\n}\n#date{\r\n    color: rgba(255, 255, 255, 0.753);\r\n    font-weight: 300;\r\n    font-size: 13px;\n}\n#time{\r\n     color: rgba(255, 255, 255, 0.753);\r\n    font-weight: 300;\r\n    font-size: 13px;\n}\n#review{\r\n    color: rgba(255, 255, 255, 0.753);\r\n    font-weight: 300;\r\n    font-size: 0.9rem;\n}\n#portada{\r\n    width: 80%;\n}\n@media (max-width: 575px) {\n#portada{\r\n        width: 100%;\n}\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.rentStreamBuy{\r\n    color:#e4d804;\n}\n#backdrop {\r\n    width: 100%;\n}\n#detail {\r\n    padding-top: 10rem;\n}\n.providers{\r\n    padding:25px 10px;\r\n    background-color: #1d1b292f;\r\n    border: 1px solid rgba(255, 255, 255, 0.041);\r\n    color: white;\r\n    font-size: 13px;\n}\n#addToList{\r\n    background-color: #e4d804;\r\n    color: rgb(0, 0, 0);\r\n    font-size: 13px;\r\n    border-radius: 5px;\n}\n.fa-heart{\r\n    color: #fb3640;\n}\n#title{\r\n    color: white;\r\n    font-weight: 900;\n}\n#genre{\r\n    color: #E50914;\r\n    font-weight: 300;\r\n    font-size: 13px;\n}\n.fa-calendar-alt{\r\n    color:#e4d804;\r\n    font-size: 12px;\n}\n.fa-clock{\r\n    color:#e4d804;\r\n    font-size: 12px;\n}\n#date{\r\n    color: rgba(255, 255, 255, 0.753);\r\n    font-weight: 300;\r\n    font-size: 13px;\n}\n#time{\r\n     color: rgba(255, 255, 255, 0.753);\r\n    font-weight: 300;\r\n    font-size: 13px;\n}\n#review{\r\n    color: rgba(255, 255, 255, 0.753);\r\n    font-weight: 300;\r\n    font-size: 0.9rem;\n}\n#portada{\r\n    width: 80%;\n}\n@media (max-width: 575px) {\n#portada{\r\n        width: 100%;\n}\n}\r\n\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.fa-heart{\r\n    color: #fb3640;\n}\r\n", ""]);
 
 // exports
 
@@ -38853,6 +38903,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MoviesComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -39586,167 +39666,193 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid" }, [
-    _vm.movie
-      ? _c("div", { staticClass: "container", attrs: { id: "detail" } }, [
-          _c("div", { staticClass: "row justify-content-center" }, [
-            _c("div", { staticClass: "card-body row d-flex flex-row" }, [
-              _c("div", { staticClass: "col-sm-6 col-lg-4" }, [
-                _c("img", {
-                  attrs: {
-                    id: "portada",
-                    src:
-                      "http://image.tmdb.org/t/p/w500" + this.movie.poster_path
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "col-xs-12 col-sm-6 col-lg-8 mt-4" },
-                [
-                  _c(
-                    "h1",
-                    {
-                      staticClass: "d-flex flex-row justify-content-between",
-                      attrs: { id: "title" }
-                    },
-                    [_vm._v(_vm._s(this.movie.title))]
-                  ),
-                  _vm._v(" "),
-                  _vm._l(this.movie.genres, function(genre) {
-                    return _c("span", { attrs: { id: "genre" } }, [
-                      _vm._v(_vm._s(genre.name) + " ")
-                    ])
-                  }),
-                  _vm._v(" "),
-                  _c("span", { attrs: { id: "date" } }, [
-                    _c("i", { staticClass: "far fa-calendar-alt ms-1 me-1" }),
-                    _vm._v(_vm._s(this.movie.release_date.split("-")[0]))
-                  ]),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "ms-2", attrs: { id: "time" } }, [
-                    _c("i", { staticClass: "far fa-clock" }),
-                    _vm._v(_vm._s(this.movie.runtime) + "min")
-                  ]),
-                  _vm._v(" "),
-                  _c("p", { attrs: { id: "review" } }, [
-                    _vm._v(_vm._s(this.movie.overview))
-                  ]),
-                  _vm._v(" "),
-                  _vm.watchProviders
-                    ? _c("div", [
-                        _vm.watchProviders.flatrate
-                          ? _c(
-                              "div",
-                              { staticClass: "providers" },
-                              [
-                                _c(
-                                  "span",
-                                  { staticClass: "rentStreamBuy me-2" },
-                                  [_vm._v("Streaming")]
-                                ),
-                                _vm._v(" "),
-                                _vm._l(this.watchProviders.flatrate, function(
-                                  provider
-                                ) {
-                                  return _c("span", { staticClass: "ms-2" }, [
-                                    _c("img", {
-                                      staticClass: "me-2",
-                                      attrs: {
-                                        width: "40px",
-                                        src:
-                                          "http://image.tmdb.org/t/p/original" +
-                                          provider.logo_path,
-                                        alt: ""
-                                      }
-                                    }),
-                                    _vm._v(
-                                      "\r\n                                        " +
-                                        _vm._s(provider.provider_name) +
-                                        "\r\n                                    "
-                                    )
-                                  ])
-                                })
-                              ],
-                              2
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.watchProviders.rent
-                          ? _c(
-                              "div",
-                              { staticClass: "providers" },
-                              [
-                                _c(
-                                  "span",
-                                  { staticClass: "rentStreamBuy me-2" },
-                                  [_vm._v("Alquiler")]
-                                ),
-                                _vm._v(" "),
-                                _vm._l(this.watchProviders.rent, function(
-                                  provider
-                                ) {
-                                  return _c("span", { staticClass: "ms-2" }, [
-                                    _c("img", {
-                                      staticClass: "me-2",
-                                      attrs: {
-                                        width: "40px",
-                                        src:
-                                          "http://image.tmdb.org/t/p/original" +
-                                          provider.logo_path,
-                                        alt: ""
-                                      }
-                                    }),
-                                    _vm._v(
-                                      "\r\n                                        " +
-                                        _vm._s(provider.provider_name) +
-                                        "\r\n                                    "
-                                    )
-                                  ])
-                                })
-                              ],
-                              2
-                            )
-                          : _vm._e()
+  return _c(
+    "div",
+    { staticClass: "container-fluid" },
+    [
+      _c("pulse-loader", {
+        attrs: { loading: _vm.loading, color: _vm.color, size: _vm.size }
+      }),
+      _vm._v(" "),
+      _vm.movie
+        ? _c("div", { staticClass: "container", attrs: { id: "detail" } }, [
+            _c("div", { staticClass: "row justify-content-center" }, [
+              _c("div", { staticClass: "card-body row d-flex flex-row" }, [
+                _c("div", { staticClass: "col-sm-6 col-lg-4" }, [
+                  _c("img", {
+                    attrs: {
+                      id: "portada",
+                      src:
+                        "http://image.tmdb.org/t/p/w500" +
+                        this.movie.poster_path
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-xs-12 col-sm-6 col-lg-8 mt-4" },
+                  [
+                    _c(
+                      "h1",
+                      {
+                        staticClass: "d-flex flex-row justify-content-between",
+                        attrs: { id: "title" }
+                      },
+                      [_vm._v(_vm._s(this.movie.title))]
+                    ),
+                    _vm._v(" "),
+                    _vm._l(this.movie.genres, function(genre) {
+                      return _c("span", { attrs: { id: "genre" } }, [
+                        _vm._v(_vm._s(genre.name) + " ")
                       ])
-                    : _vm._e()
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _vm.videoResults
-                ? _c(
-                    "div",
-                    {
-                      staticClass:
-                        "mt-4 d-flex align-items-center justify-content-center"
-                    },
-                    [
-                      _c("iframe", {
-                        attrs: {
-                          width: "650",
-                          height: "415",
-                          src:
-                            "https://www.youtube.com/embed/" +
-                            this.videoResults[0].key,
-                          title: "YouTube video player",
-                          frameborder: "0",
-                          allow:
-                            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-                          allowfullscreen: ""
-                        }
-                      })
-                    ]
-                  )
-                : _vm._e()
+                    }),
+                    _vm._v(" "),
+                    _c("span", { attrs: { id: "date" } }, [
+                      _c("i", { staticClass: "far fa-calendar-alt ms-1 me-1" }),
+                      _vm._v(_vm._s(this.movie.release_date.split("-")[0]))
+                    ]),
+                    _vm._v(" "),
+                    _c("span", { staticClass: "ms-2", attrs: { id: "time" } }, [
+                      _c("i", { staticClass: "far fa-clock" }),
+                      _vm._v(_vm._s(this.movie.runtime) + "min")
+                    ]),
+                    _vm._v(" "),
+                    _c("p", { attrs: { id: "review" } }, [
+                      _vm._v(_vm._s(this.movie.overview))
+                    ]),
+                    _vm._v(" "),
+                    _vm.watchProviders
+                      ? _c("div", [
+                          _vm.watchProviders.flatrate
+                            ? _c(
+                                "div",
+                                { staticClass: "providers" },
+                                [
+                                  _c(
+                                    "span",
+                                    { staticClass: "rentStreamBuy me-2" },
+                                    [_vm._v("Streaming")]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(this.watchProviders.flatrate, function(
+                                    provider
+                                  ) {
+                                    return _c("span", { staticClass: "ms-2" }, [
+                                      _c("img", {
+                                        staticClass: "me-2",
+                                        attrs: {
+                                          width: "40px",
+                                          src:
+                                            "http://image.tmdb.org/t/p/original" +
+                                            provider.logo_path,
+                                          alt: ""
+                                        }
+                                      }),
+                                      _vm._v(
+                                        "\r\n                                        " +
+                                          _vm._s(provider.provider_name) +
+                                          "\r\n                                    "
+                                      )
+                                    ])
+                                  })
+                                ],
+                                2
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.watchProviders.rent
+                            ? _c(
+                                "div",
+                                { staticClass: "providers" },
+                                [
+                                  _c(
+                                    "span",
+                                    { staticClass: "rentStreamBuy me-2" },
+                                    [_vm._v("Alquiler")]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(this.watchProviders.rent, function(
+                                    provider
+                                  ) {
+                                    return _c("span", { staticClass: "ms-2" }, [
+                                      _c("img", {
+                                        staticClass: "me-2",
+                                        attrs: {
+                                          width: "40px",
+                                          src:
+                                            "http://image.tmdb.org/t/p/original" +
+                                            provider.logo_path,
+                                          alt: ""
+                                        }
+                                      }),
+                                      _vm._v(
+                                        "\r\n                                        " +
+                                          _vm._s(provider.provider_name) +
+                                          "\r\n                                    "
+                                      )
+                                    ])
+                                  })
+                                ],
+                                2
+                              )
+                            : _vm._e()
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._m(0)
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _vm.videoResults
+                  ? _c(
+                      "div",
+                      {
+                        staticClass:
+                          "mt-4 d-flex align-items-center justify-content-center"
+                      },
+                      [
+                        _c("iframe", {
+                          attrs: {
+                            width: "650",
+                            height: "415",
+                            src:
+                              "https://www.youtube.com/embed/" +
+                              this.videoResults[0].key,
+                            title: "YouTube video player",
+                            frameborder: "0",
+                            allow:
+                              "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                            allowfullscreen: ""
+                          }
+                        })
+                      ]
+                    )
+                  : _vm._e()
+              ])
             ])
           ])
-        ])
-      : _vm._e()
-  ])
+        : _vm._e()
+    ],
+    1
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "btn btn-lg mt-4", attrs: { id: "addToList" } },
+      [
+        _c("span", [_vm._v("Añadir a la lista")]),
+        _c("i", { staticClass: "fas fa-heart ms-2" })
+      ]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -39823,7 +39929,18 @@ var render = function() {
             _vm.query = $event.target.value
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _vm.logged
+        ? _c(
+            "button",
+            {
+              staticClass:
+                "p2 btnText btn btn-outline-warning mr-md-3 mb-2 mb-md-0"
+            },
+            [_vm._v("Mi lista "), _c("i", { staticClass: "fas fa-heart ms-2" })]
+          )
+        : _vm._e()
     ]),
     _vm._v(" "),
     _c(
@@ -52472,14 +52589,17 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************************************!*\
   !*** ./resources/js/components/MoviesComponent.vue ***!
   \*****************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MoviesComponent_vue_vue_type_template_id_a22ddf42___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MoviesComponent.vue?vue&type=template&id=a22ddf42& */ "./resources/js/components/MoviesComponent.vue?vue&type=template&id=a22ddf42&");
 /* harmony import */ var _MoviesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MoviesComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/MoviesComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _MoviesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _MoviesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _MoviesComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MoviesComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -52487,7 +52607,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _MoviesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _MoviesComponent_vue_vue_type_template_id_a22ddf42___WEBPACK_IMPORTED_MODULE_0__["render"],
   _MoviesComponent_vue_vue_type_template_id_a22ddf42___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -52509,13 +52629,29 @@ component.options.__file = "resources/js/components/MoviesComponent.vue"
 /*!******************************************************************************!*\
   !*** ./resources/js/components/MoviesComponent.vue?vue&type=script&lang=js& ***!
   \******************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MoviesComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MoviesComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MoviesComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MoviesComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MoviesComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 

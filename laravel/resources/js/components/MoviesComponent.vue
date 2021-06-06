@@ -19,6 +19,7 @@
             <input type="text" id="searchButton" class="ml-auto btnText btn btn-outline-dark mr-md-3 mb-2 mb-md-0" placeholder="Buscar" v-model="query" @keyup="changeActualState('searchQuery');initialGetResults()">
             
 
+            <button v-if="logged" class="p2 btnText btn btn-outline-warning mr-md-3 mb-2 mb-md-0">Mi lista <i class="fas fa-heart ms-2"></i></button>
 
 
         </div>
@@ -80,7 +81,11 @@ export default {
             results: [],
             query:'',
             page:1,
+            logged:false,
         };
+    },
+    mounted(){
+        this.checkLogin();
     },
     filters:{
         dateFormat($value){
@@ -92,6 +97,19 @@ export default {
         },
     },
     methods: {
+        checkLogin(){
+            console.log("AAAAAAAAAAAAAAAAAAAAA");
+            axios.get('is-auth')
+            .then(response => {
+                if(response.data) {
+                    // console.log(response.data);
+                    this.logged = true;
+                }else{
+                    // console.log("not logged in");
+                    this.logged = false;
+                }
+            })
+        },
         changeActualState($actual){
             this.actualState = $actual;
         },
@@ -205,3 +223,8 @@ export default {
     }
 };
 </script>
+<style>
+.fa-heart{
+    color: #fb3640;
+}
+</style>

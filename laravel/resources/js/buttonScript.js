@@ -14,13 +14,10 @@ function scrollFunction() {
         
         mybutton.classList.add('visible');
         mybutton.classList.remove('oculto');
-        console.log(mybutton.classList);
     } else {
         
         mybutton.classList.remove('visible');
         mybutton.classList.add('oculto');
-        // mybutton.style.display = "hidden";
-        // console.log(mybutton.style.display);
     }
 }
 

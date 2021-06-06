@@ -24,7 +24,7 @@
         {{-- </div> --}}
     </div>
 
-    <a id="myBtn" class="oculto btn-outline-dark mr-md-3 mb-2 mb-md-0" href="#app"><img width="50px" src="https://img.icons8.com/carbon-copy/344/up.png"></a>
+    <a id="myBtn" class="btn-outline-dark mr-md-3 mb-2 mb-md-0" href="#app"><img width="50px" src="https://img.icons8.com/carbon-copy/344/up.png"></a>
 
    
 @stop
