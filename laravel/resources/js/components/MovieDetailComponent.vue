@@ -1,6 +1,5 @@
 <template>
 <div class="container-fluid">
-    <pulse-loader :loading="loading" :color="color" :size="size"></pulse-loader>
     <div id="detail" class="container" v-if="movie">
         <div class="row justify-content-center">
                     <div class="card-body row d-flex flex-row">
@@ -34,8 +33,11 @@
                             </div>
                         </div>
 
-                        <div id="addToList" class="btn btn-lg mt-4">
-                            <span>Añadir a la lista</span><i class="fas fa-heart ms-2"></i>
+                        <div v-if="logged" id="addRemoveFromList" class="btn btn-lg mt-4" @click="addRemoveFromList">
+                            <span>Añadir a la lista</span>
+                            
+                            <img v-if="!inList" class="ms-2" src="../../images/emptyHeart.png" width="25px" alt="">
+                            <img v-if="inList" id="heart" class="ms-2" src="../../images/heart.png" width="25px" alt="">
                         </div>
 
                         </div>
@@ -59,20 +61,54 @@ export default {
     props: ["id"],
     data: function() {
         return {
+            userId: '',
+            logged: false,
             movie: null,
             videoResults : null,
             watchProviders: null,
             videoLoaded:false,
             providersLoaded:false,
-            show:false,
+            inList:false,
+            prueba:false,
         };
     },
     mounted() {
         this.movieBasicJson();
         this.movieWatchProviders();
         this.movieVideoJson();
+        this.checkUserID();
+        this.checkFilmInList();
     },
     methods: {
+        checkFilmInList(){
+            axios.get("/addFilm/"+this.id)
+            .then(response => {
+                   this.output = response.data
+                   this.inList = this.output.exists;
+                   }
+            );
+        },
+        addRemoveFromList(){
+            axios.post("/addFilm/"+this.id)
+            .then(response => {
+                   this.output = response.data
+                //    this.inList = this.output.exists;
+                    this.inList = this.output.exists;
+                }
+            );
+        },
+        checkUserID(){
+            axios.get('/is-auth')
+            .then(response => {
+                if(response.data) {
+                    if (response.data.id) {
+                        console.log(response.data);
+                        this.userId = response.data.id;
+                        this.logged = true;
+                    }
+                }
+            })
+        },
         movieBasicJson() {
             axios
                 .get(
@@ -87,17 +123,7 @@ export default {
             .then(response =>{
                 this.videoResults = response.data.results;
                 this.videoLoaded = true;
-                if (response.data) {
-                    
-                }else{
-                    this.loading = false;
-                }
             });
-            
-                
-            
-            
-            
         },
         async movieWatchProviders(){
             const test2 = await axios.get("https://api.themoviedb.org/3/movie/"+this.id+"/watch/providers?api_key=9ec647bcf53f9315ac4f7e4e2322c906")
@@ -106,7 +132,14 @@ export default {
                 this.providersLoaded = true;               
             });
         }
-    }
+    },
+    computed:{
+        inListStyle: function(){
+            return{
+                'inList' : this.inList,
+            }
+        },
+    },
 };
 
 </script>
@@ -132,15 +165,20 @@ export default {
     font-size: 13px;
 }
 
-#addToList{
+#addRemoveFromList{
     background-color: #e4d804;
     color: rgb(0, 0, 0);
     font-size: 13px;
     border-radius: 5px;
 }
 
-.fa-heart{
-    color: #fb3640;
+
+
+.notInList{
+    color: grey !important;
+}
+.inList{
+    color: #fb3640 !important;
 }
 
 #title{
@@ -183,6 +221,41 @@ export default {
 #portada{
     width: 80%;
 }
+
+#heart{
+    animation: heartbeat 1s;
+}
+
+
+@keyframes heartbeat
+{
+  0%
+  {
+    transform: scale( .75 );
+  }
+  20%
+  {
+    transform: scale( 1 );
+  }
+  40%
+  {
+    transform: scale( .75 );
+  }
+  60%
+  {
+    transform: scale( 1 );
+  }
+  80%
+  {
+    transform: scale( .75 );
+  }
+  100%
+  {
+    transform: scale( .75 );
+  }
+}
+
+
 @media (max-width: 575px) {
     #portada{
         width: 100%;

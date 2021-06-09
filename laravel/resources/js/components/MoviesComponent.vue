@@ -19,7 +19,7 @@
             <input type="text" id="searchButton" class="ml-auto btnText btn btn-outline-dark mr-md-3 mb-2 mb-md-0" placeholder="Buscar" v-model="query" @keyup="changeActualState('searchQuery');initialGetResults()">
             
 
-            <button v-if="logged" class="p2 btnText btn btn-outline-warning mr-md-3 mb-2 mb-md-0">Mi lista <i class="fas fa-heart ms-2"></i></button>
+            <button v-if="logged" @click="getListFilms" class="p2 btnText btn btn-outline-warning mr-md-3 mb-2 mb-md-0">Mi lista <i class="fas fa-heart ms-2"></i></button>
 
 
         </div>
@@ -91,14 +91,15 @@ export default {
         dateFormat($value){
             // console.log($value);
             if ($value) {
-                
                 return $value.split("-")[0];
             }
         },
     },
     methods: {
+        getListFilms(){
+            // Devolver un JSON desde laravel con todas las peliculas del usuario
+        },
         checkLogin(){
-            console.log("AAAAAAAAAAAAAAAAAAAAA");
             axios.get('is-auth')
             .then(response => {
                 if(response.data) {
@@ -123,7 +124,6 @@ export default {
                         this.page += 1;
                         this.results.push(...response.data.results);
                         $state.loaded();
-                        console.log(this.page);
                     }else{
                         $state.complete();
                     }
@@ -154,7 +154,6 @@ export default {
                         this.page += 1;
                         this.results.push(...response.data.results);
                         $state.loaded();
-                        console.log(this.page);
                     }else{
                         $state.complete();
                     }
@@ -185,7 +184,6 @@ export default {
                         this.page += 1;
                         this.results.push(...response.data.results);
                         $state.loaded();
-                        console.log(this.page);
                     }else{
                         $state.complete();
                     }
@@ -214,7 +212,6 @@ export default {
                         this.page += 1;
                         this.results.push(...response.data.results);
                         $state.loaded();
-                        console.log(this.page);
                     }else{
                         $state.complete();
                     }

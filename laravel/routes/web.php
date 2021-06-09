@@ -37,3 +37,6 @@ Route::get('is-auth', function () {
     return $auth;
     dd($auth);
 });
+
+Route::post('/addFilm/{filmId}', 'FilmController@store');
+Route::get('/addFilm/{filmId}', 'FilmController@check');
