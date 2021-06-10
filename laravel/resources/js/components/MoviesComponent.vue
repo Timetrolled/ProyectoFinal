@@ -18,6 +18,9 @@
             
             <input type="text" id="searchButton" class="ml-auto btnText btn btn-outline-dark mr-md-3 mb-2 mb-md-0" placeholder="Buscar" v-model="query" @keyup="changeActualState('searchQuery');initialGetResults()">
             
+            <v-select v-model="genre" @input="getFilmsByGenre" label="name" :options="genres" class="me-2 ms-2 mr-md-3 mb-2 mb-md-0" placeholder="Género">
+
+            </v-select>
 
             <button v-if="logged" @click="getListFilms" class="p2 btnText btn btn-outline-warning mr-md-3 mb-2 mb-md-0">Mi lista <i class="fas fa-heart ms-2"></i></button>
 
@@ -32,11 +35,12 @@
                 :key="result.id"
             >
             <a :href="'/details/' + result.id">
-                <img
-                    :src="'http://image.tmdb.org/t/p/w500' + result.poster_path"
+                <img v-if="result.poster_path"
+                    :src="'http://image.tmdb.org/t/p/w500/' + result.poster_path"
                     class="card-img-top"
                     alt="..."
                 />
+                <img class="card-img-top" v-else src="https://linkilaw.com/wp-content/uploads/2019/11/img-placeholder.jpg" alt="">
                 </a>
                 <div class="card-body">
                     <h6 class="card-title">{{ result.title }}</h6>
@@ -59,6 +63,9 @@
             <div v-else-if="actualState === 'searchQuery'">
                 <infinite-loading @infinite="getResults"></infinite-loading>
             </div>
+            <div v-else-if="actualState === 'genres'">
+                <infinite-loading @infinite="getFilmsByGenreInfinite"></infinite-loading>
+            </div>
             
         </div>
 
@@ -70,6 +77,7 @@
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading';
+import 'vue-select/dist/vue-select.css';
 
 export default {
     components: {
@@ -82,10 +90,16 @@ export default {
             query:'',
             page:1,
             logged:false,
+            userId: '',
+            userFilms:[],
+            genres:[],
+            genre: null,
+            once:0,
         };
     },
     mounted(){
         this.checkLogin();
+        this.getGenres();
     },
     filters:{
         dateFormat($value){
@@ -96,8 +110,62 @@ export default {
         },
     },
     methods: {
+        getFilmsByGenre(){
+            this.once++;
+            console.log(this.once);
+            
+            this.results = [];
+            
+            console.log(JSON.parse(JSON.stringify(this.genre)));
+            this.actualState = 'genres';
+            this.changeActualState('genres');
+            axios
+                .get(
+                    "https://api.themoviedb.org/3/discover/movie?api_key=9ec647bcf53f9315ac4f7e4e2322c906&with_genres="+this.genre.id+"&page="+this.page
+                )
+                .then(response => {
+                    this.results.push(response.data);
+                    this.results.shift();
+                });
+        },
+        getFilmsByGenreInfinite($state){
+            this.firstText = '';
+            this.query = '';
+            this.actualState = 'genres';
+            axios
+                .get(
+                    "https://api.themoviedb.org/3/discover/movie?api_key=9ec647bcf53f9315ac4f7e4e2322c906&with_genres="+this.genre.id+"&page="+this.page
+                )
+                .then(response => {
+                     if (response.data.results.length) {
+                        this.page += 1;
+                        this.results.push(...response.data.results);
+                        this.once++;
+                        $state.loaded();
+                    }else{
+                        $state.complete();
+                    }
+                });
+        },
+        getGenres(){
+            axios.get('https://api.themoviedb.org/3/genre/movie/list?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=es-ES')
+            .then(response => {
+                this.genres.push(...response.data.genres);
+            });
+        },
         getListFilms(){
-            // Devolver un JSON desde laravel con todas las peliculas del usuario
+            this.actualState = "";
+            this.results = [];
+            console.log(this.userFilms);
+            this.userFilms.forEach(pelicula => {
+                axios
+                .get(
+                    "https://api.themoviedb.org/3/movie/"+pelicula.film_id+"?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=es-ES"
+                )
+                .then(response => {
+                    this.results.push(response.data);
+                });
+            });
         },
         checkLogin(){
             axios.get('is-auth')
@@ -105,6 +173,13 @@ export default {
                 if(response.data) {
                     // console.log(response.data);
                     this.logged = true;
+                    this.userId = response.data.id;
+                    axios.get('/user/'+this.userId)
+                    .then(userResponse => {
+                        if(userResponse.data) {
+                        this.userFilms = userResponse.data;
+                        }
+                    })
                 }else{
                     // console.log("not logged in");
                     this.logged = false;
@@ -203,6 +278,7 @@ export default {
         getResults($state){
             this.firstText = '';
             this.actualState = 'searchQuery';
+            console.log(this.results);
             axios
                 .get(
                     "https://api.themoviedb.org/3/search/movie?api_key=9ec647bcf53f9315ac4f7e4e2322c906&language=es-ES&query="+this.query+"&include_adult=false&page="+this.page
@@ -224,4 +300,20 @@ export default {
 .fa-heart{
     color: #fb3640;
 }
+
+
+.v-select {
+    display: inline-block;
+    width: 200px;
+}
+
+.vs__search{
+    color: #fb3640;
+}
+
+.vs__selected{
+    color: #fb3640;
+}
+
+
 </style>

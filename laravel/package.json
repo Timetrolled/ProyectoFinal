@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "vue-infinite-loading": "^2.4.5",
+        "vue-select": "^3.11.2",
         "vue-spinner": "^1.0.4"
     }
 }

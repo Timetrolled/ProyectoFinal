@@ -22,6 +22,8 @@ Route::get('/details/{id}', function ($id) {
     return view('details')->with(compact('id'));
 });
 
+Route::get('user/{id}','UserController@show');
+
 Route::get('/register','RegistrationController@create');
 Route::post('register','RegistrationController@store');
 

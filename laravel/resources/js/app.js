@@ -24,6 +24,11 @@ Vue.component('card-component', require('./components/CardComponent.vue').defaul
 Vue.component('movies-component', require('./components/MoviesComponent.vue').default);
 Vue.component('button-component', require('./components/buttonComponent.vue').default);
 Vue.component('moviedetail-component', require('./components/MovieDetailComponent.vue').default);
+import Vue from 'vue'
+import vSelect from 'vue-select'
+
+Vue.component('v-select', vSelect);
+// Vue.component('v-select', VueSelect.VueSelect);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
